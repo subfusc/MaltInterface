@@ -25,10 +25,8 @@ function install_malt() {
     if [ -f ~/.local/bin/ ]; then
         rm ~/.local/bin/malt
     fi
-    cat > ~/.local/bin/malt <<EOF
-#!/bin/bash
-java -jar ~/.local/share/malt/maltparser-1.7.2.jar \$@
-EOF
+ 
+    cp malt ~/.local/bin/malt
     
     if [ $(basename $(hostname) uio.no) == $(hostname) ]; then
         echo "Make file executable, need sudo account"

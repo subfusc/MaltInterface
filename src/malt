@@ -45,7 +45,7 @@ if [[ ${CONFIG_FILE} == "N/A" ]]; then
     exit 0
 fi
 
-CONFIG_BASE=$(basename ${CONFIG_FILE})
+CONFIG_BASE=$(basename ${CONFIG_FILE} "N/A")
 MADE_SYMLINK="False"
 
 if [ ${CONFIG_FILE} != ${CONFIG_BASE} ]; then
