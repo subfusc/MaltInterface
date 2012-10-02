@@ -1,0 +1,60 @@
+#!/bin/bash
+JAVA_ARGUMENTS=""
+CONFIG_FILE=""
+REST=""
+LAST="N/A"
+
+for arg in $@; do
+    if [ $LAST == "N/A" ]; then
+        case $arg in
+            -j)
+                LAST="-j" ;;
+            -c)
+                LAST="-c" ;;
+            *)
+                if [[ -z $REST ]]; then
+                    REST=$arg
+                else
+                    REST="${REST} ${arg}"
+                fi
+                ;;
+        esac
+    else
+        case $LAST in
+            -j)
+                LAST="N/A"
+                JAVA_ARGUMENTS="${JAVA_ARGUMENTS} ${arg}"
+                ;;
+            -c)
+                CONFIG_FILE=$arg
+                LAST="N/A"
+                ;;
+            *)
+                LAST="N/A"
+                ;;
+        esac
+    fi
+done
+
+echo $JAVA_ARGUMENTS
+echo $CONFIG_FILE
+echo $REST
+     
+if [[ ${CONFIG_FILE} == "N/A" ]]; then
+    java ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.7.2.jar $REST
+    exit 0
+fi
+
+CONFIG_BASE=$(basename ${CONFIG_FILE})
+MADE_SYMLINK="False"
+
+if [ ${CONFIG_FILE} != ${CONFIG_BASE} ]; then
+    ln -s ${CONFIG_FILE} ${CONFIG_BASE} 
+    MADE_SYMLINK="True"
+fi
+
+java ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.7.2.jar -c ${CONFIG_BASE} $REST
+
+if [ ${MADE_SYMLINK} == "True" ]; then
+    rm ${CONFIG_BASE}
+fi
