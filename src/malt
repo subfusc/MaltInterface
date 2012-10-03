@@ -36,9 +36,9 @@ for arg in $@; do
     fi
 done
 
-echo $JAVA_ARGUMENTS
-echo $CONFIG_FILE
-echo $REST
+#echo $JAVA_ARGUMENTS
+#echo $CONFIG_FILE
+#echo $REST
      
 if [[ ${CONFIG_FILE} == "N/A" ]]; then
     java ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.7.2.jar $REST
@@ -48,7 +48,7 @@ fi
 CONFIG_BASE=$(basename ${CONFIG_FILE} "N/A")
 MADE_SYMLINK="False"
 
-if [ ${CONFIG_FILE} != ${CONFIG_BASE} ]; then
+if [ ! ${CONFIG_FILE} == ${CONFIG_BASE} ]; then
     ln -s ${CONFIG_FILE} ${CONFIG_BASE} 
     MADE_SYMLINK="True"
 fi
