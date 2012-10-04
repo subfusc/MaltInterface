@@ -2,6 +2,7 @@
 JAVA_ARGUMENTS=""
 CONFIG_FILE=""
 REST=""
+TRAIN='False'
 LAST="N/A"
 
 for arg in $@; do
@@ -11,6 +12,8 @@ for arg in $@; do
                 LAST="-j" ;;
             -c)
                 LAST="-c" ;;
+            -m)
+                LAST="-m" ;;
             *)
                 if [[ -z $REST ]]; then
                     REST=$arg
@@ -29,6 +32,13 @@ for arg in $@; do
                 CONFIG_FILE=$arg
                 LAST="N/A"
                 ;;
+            -m)
+                REST="${REST} -m ${arg}"
+                LAST="N/A"
+                if [[ ${arg} == 'learn' ]]; then
+                    TRAIN='True'
+                fi
+                ;;
             *)
                 LAST="N/A"
                 ;;
@@ -45,16 +55,24 @@ if [[ ${CONFIG_FILE} == "N/A" ]]; then
     exit 0
 fi
 
-CONFIG_BASE=$(basename ${CONFIG_FILE} "N/A")
-MADE_SYMLINK="False"
-
-if [ ! ${CONFIG_FILE} == ${CONFIG_BASE} ]; then
-    ln -s ${CONFIG_FILE} ${CONFIG_BASE} 
-    MADE_SYMLINK="True"
-fi
-
-java ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.7.2.jar -c ${CONFIG_BASE} $REST
-
-if [ ${MADE_SYMLINK} == "True" ]; then
-    rm ${CONFIG_BASE}
+if [[ ${TRAIN} == "True" ]]; then
+    DIRECTORY="$(dirname ${CONFIG_FILE})"
+    BASEFILENAME="$(basename ${CONFIG_FILE} .mco)"
+    FILENAME="${DIRECTORY}/${BASEFILENAME}"
+    java  ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.7.2.jar -c ${BASEFILENAME} $REST &> "${FILENAME}.out"
+    mv "${BASEFILENAME}.mco" ${DIRECTORY}
+else 
+    CONFIG_BASE=$(basename ${CONFIG_FILE} "N/A")
+    MADE_SYMLINK="False"
+    
+    if [ ! ${CONFIG_FILE} == ${CONFIG_BASE} ]; then
+        ln -s ${CONFIG_FILE} ${CONFIG_BASE} 
+        MADE_SYMLINK="True"
+    fi
+    
+    java ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.7.2.jar -c ${CONFIG_BASE} $REST
+    
+    if [ ${MADE_SYMLINK} == "True" ]; then
+        rm ${CONFIG_BASE}
+    fi
 fi
