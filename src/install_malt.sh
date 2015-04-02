@@ -1,11 +1,11 @@
 #!/bin/bash
-VERSION_NUMBER=1.7.2
+VERSION_NUMBER=1.8
 PACKAGE=maltparser-${VERSION_NUMBER}.tar.gz
 
 EVAL_VERSION_NUMBER=1.8
 
 function install_malt() {
-    
+
     wget http://maltparser.org/dist/${PACKAGE}
     tar -xf ${PACKAGE}
     cd $(basename ${PACKAGE} .tar.gz)
@@ -20,25 +20,25 @@ function install_malt() {
 #fi
 #source ~/.bashrc
     cd ..
-    
+
     mkdir -p ~/.local/bin/
     if [ -f ~/.local/bin/ ]; then
         rm ~/.local/bin/malt
     fi
- 
+
     cp malt ~/.local/bin/malt
-    
+
     if [ $(basename $(hostname) uio.no) == $(hostname) ]; then
         echo "Make file executable, need sudo account"
         sudo chmod u+x ~/.local/bin/malt
     else
         chmod u+x ~/.local/bin/malt
     fi
-    
+
     if [ -z "$(grep -o -P '^export PATH=.*\.local/bin.*$' ~/.bashrc)" ]; then
         echo "export PATH=${HOME}/.local/bin/:${PATH}" >> ~/.bashrc
-    fi 
-    source ~/.bashrc  
+    fi
+    source ~/.bashrc
 
     rm -rf $(basename ${PACKAGE} .tar.gz)
     rm ${PACKAGE}
@@ -56,11 +56,11 @@ function install_eval() {
 #!/bin/bash
 perl ~/.local/share/conll-eval/eval.pl \$@
 EOF
-    
+
     if [ -z "$(grep -o -P '^export PATH=.*\.local/bin.*$' ~/.bashrc)" ]; then
         echo "export PATH=${HOME}/.local/bin/:${PATH}" >> ~/.bashrc
-    fi 
-    source ~/.bashrc  
+    fi
+    source ~/.bashrc
 
     if [ $(basename $(hostname) uio.no) == $(hostname) ]; then
         echo "Make file executable, need sudo account"

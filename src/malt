@@ -49,9 +49,9 @@ done
 #echo $JAVA_ARGUMENTS
 #echo $CONFIG_FILE
 #echo $REST
-     
+
 if [[ ${CONFIG_FILE} == "N/A" ]]; then
-    java ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.7.2.jar $REST
+    java ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.8.jar $REST
     exit 0
 fi
 
@@ -59,19 +59,19 @@ if [[ ${TRAIN} == "True" ]]; then
     DIRECTORY="$(dirname ${CONFIG_FILE})"
     BASEFILENAME="$(basename ${CONFIG_FILE} .mco)"
     FILENAME="${DIRECTORY}/${BASEFILENAME}"
-    java  ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.7.2.jar -c ${BASEFILENAME} $REST &> "${FILENAME}.out"
+    java  ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.8.jar -c ${BASEFILENAME} $REST &> "${FILENAME}.out"
     mv "${BASEFILENAME}.mco" ${DIRECTORY}
-else 
+else
     CONFIG_BASE=$(basename ${CONFIG_FILE} "N/A")
     MADE_SYMLINK="False"
-    
+
     if [ ! ${CONFIG_FILE} == ${CONFIG_BASE} ]; then
-        ln -s ${CONFIG_FILE} ${CONFIG_BASE} 
+        ln -s ${CONFIG_FILE} ${CONFIG_BASE}
         MADE_SYMLINK="True"
     fi
-    
-    java ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.7.2.jar -c ${CONFIG_BASE} $REST
-    
+
+    java ${JAVA_ARGUMENTS} -jar ~/.local/share/malt/maltparser-1.8.jar -c ${CONFIG_BASE} $REST
+
     if [ ${MADE_SYMLINK} == "True" ]; then
         rm ${CONFIG_BASE}
     fi
